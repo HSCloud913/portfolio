@@ -1,0 +1,36 @@
+### Backend (Spring Boot / Gradle) ###
+backend/.gradle/
+backend/node_modules/
+backend/build/
+backend/out/
+backend/bin/
+backend/*.iws
+backend/*.iml
+backend/*.ipr
+backend/HELP.md
+backend/.claude/
+
+### Frontend (React / Vite) ###
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.claude/
+
+### IDE ###
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+
+### OS ###
+.DS_Store
+Thumbs.db
+desktop.ini
+
+### Environment ###
+.env
+.env.local
+.env.production
+.env.development
+*.env

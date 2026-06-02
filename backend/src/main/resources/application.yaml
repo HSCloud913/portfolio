@@ -1,0 +1,35 @@
+# $schema: https://json.schemastore.org/spring-boot-application-yaml
+spring:
+    application:
+        name: portfolio
+
+    datasource:
+        url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/portfolio}
+        driver-class-name: org.postgresql.Driver
+        username: ${DATABASE_USERNAME:portfolio}
+        password: ${DATABASE_PASSWORD:portfolio1234}
+
+    jpa:
+        show-sql: true
+        hibernate:
+            ddl-auto: update
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.PostgreSQLDialect
+
+server:
+    error:
+        include-stacktrace: never
+        include-message: never
+
+logging:
+    level:
+        org.springframework.security: DEBUG
+
+admin:
+    username: ${ADMIN_USERNAME:admin}
+    password: ${ADMIN_PASSWORD:admin1234}
+
+jwt:
+    secret: ${JWT_SECRET:IW|W<CxvtgvK*R7wOzaui(Kewx9ERVGU}
+    expiration: ${JWT_EXPIRATION:86400000}
