@@ -8,4 +8,7 @@ export default defineConfig({
         react(),
         tailwindcss(),
     ],
+    preview: {
+        allowedHosts: ['pacific-possibility-production-719c.up.railway.app'],
+    },
 })
