@@ -75,7 +75,7 @@ export default function Career() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {/* 교육 */}
                     <motion.div
-                        variants={{visible: {transition: {staggerChildren: 0.08}}}}
+                        variants={{hidden: {}, visible: {transition: {staggerChildren: 0.08}}}}
                         initial="hidden"
                         whileInView="visible"
                         viewport={{once: true, margin: '-60px'}}
@@ -92,7 +92,7 @@ export default function Career() {
 
                     {/* 회사 */}
                     <motion.div
-                        variants={{visible: {transition: {staggerChildren: 0.08}}}}
+                        variants={{hidden: {}, visible: {transition: {staggerChildren: 0.08}}}}
                         initial="hidden"
                         whileInView="visible"
                         viewport={{once: true, margin: '-60px'}}

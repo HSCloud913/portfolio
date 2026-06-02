@@ -38,7 +38,7 @@ export default function Projects() {
                 </motion.div>
 
                 <motion.div
-                    variants={{visible: {transition: {staggerChildren: 0.12}}}}
+                    variants={{hidden: {}, visible: {transition: {staggerChildren: 0.12}}}}
                     initial="hidden"
                     whileInView="visible"
                     viewport={{once: true, margin: '-60px'}}
