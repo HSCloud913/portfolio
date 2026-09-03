@@ -16,17 +16,24 @@ export default function ExperiencesAdmin() {
     const [editing, setEditing] = useState<Experience | null>(null)
     const [form, setForm] = useState(empty)
 
-    const load = () => fetchExperiences().then(setItems)
+    const load = () => fetchExperiences()
+        .then(setItems)
+        .catch(err => console.error('목록 불러오기 실패:', err))
     useEffect(() => {
         load()
     }, [])
 
     const handleSave = async () => {
         if (!form.title.trim() || !form.date.trim()) return
-        if (editing) {
-            await updateExperience(editing.id, form)
-        } else {
-            await createExperience(form)
+        try {
+            if (editing) {
+                await updateExperience(editing.id, form)
+            } else {
+                await createExperience(form)
+            }
+        } catch (err) {
+            console.error('저장 실패:', err)
+            return
         }
         setEditing(null)
         setForm(empty)
@@ -107,7 +114,7 @@ export default function ExperiencesAdmin() {
                                     <button onClick={() => handleEdit(item)} style={btnEdit}
                                             className="px-3 py-1 text-xs rounded-lg text-gray-300 transition-opacity hover:opacity-80">수정
                                     </button>
-                                    <button onClick={() => deleteExperience(item.id).then(load)} style={btnDelete}
+                                    <button onClick={() => deleteExperience(item.id).then(load).catch(err => console.error('삭제 실패:', err))} style={btnDelete}
                                             className="px-3 py-1 text-xs rounded-lg text-red-400 transition-opacity hover:opacity-80">삭제
                                     </button>
                                 </div>

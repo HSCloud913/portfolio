@@ -40,9 +40,13 @@ function TimelineItem({date, title, description, index}: {
 
 export default function Career() {
     const [experiences, setExperiences] = useState<Experience[]>([])
+    const [loaded, setLoaded] = useState(false)
 
     useEffect(() => {
-        fetchExperiences().then(setExperiences)
+        fetchExperiences()
+            .then(setExperiences)
+            .catch(err => console.error('experiences 불러오기 실패:', err))
+            .finally(() => setLoaded(true))
     }, [])
 
     const education = experiences.filter(e => e.type === 'EDUCATION')
@@ -72,41 +76,43 @@ export default function Career() {
                     />
                 </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {/* 교육 */}
-                    <motion.div
-                        variants={{hidden: {}, visible: {transition: {staggerChildren: 0.08}}}}
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{once: true, margin: '-60px'}}
-                        className="rounded-2xl p-6"
-                        style={{background: 'rgba(88,28,135,0.08)', border: '1px solid rgba(168,85,247,0.15)'}}
-                    >
-                        <p className="text-xs tracking-[0.3em] text-purple-400 uppercase mb-6">Education</p>
-                        <ul>
-                            {education.map((item, i) => (
-                                <TimelineItem key={i} {...item} index={i}/>
-                            ))}
-                        </ul>
-                    </motion.div>
+                {loaded && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {/* 교육 */}
+                        <motion.div
+                            variants={{hidden: {}, visible: {transition: {staggerChildren: 0.08}}}}
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{once: true, margin: '-60px'}}
+                            className="rounded-2xl p-6"
+                            style={{background: 'rgba(88,28,135,0.08)', border: '1px solid rgba(168,85,247,0.15)'}}
+                        >
+                            <p className="text-xs tracking-[0.3em] text-purple-400 uppercase mb-6">Education</p>
+                            <ul>
+                                {education.map((item, i) => (
+                                    <TimelineItem key={i} {...item} index={i}/>
+                                ))}
+                            </ul>
+                        </motion.div>
 
-                    {/* 회사 */}
-                    <motion.div
-                        variants={{hidden: {}, visible: {transition: {staggerChildren: 0.08}}}}
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{once: true, margin: '-60px'}}
-                        className="rounded-2xl p-6"
-                        style={{background: 'rgba(88,28,135,0.08)', border: '1px solid rgba(168,85,247,0.15)'}}
-                    >
-                        <p className="text-xs tracking-[0.3em] text-purple-400 uppercase mb-6">Company</p>
-                        <ul>
-                            {company.map((item, i) => (
-                                <TimelineItem key={i} {...item} index={i}/>
-                            ))}
-                        </ul>
-                    </motion.div>
-                </div>
+                        {/* 회사 */}
+                        <motion.div
+                            variants={{hidden: {}, visible: {transition: {staggerChildren: 0.08}}}}
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{once: true, margin: '-60px'}}
+                            className="rounded-2xl p-6"
+                            style={{background: 'rgba(88,28,135,0.08)', border: '1px solid rgba(168,85,247,0.15)'}}
+                        >
+                            <p className="text-xs tracking-[0.3em] text-purple-400 uppercase mb-6">Company</p>
+                            <ul>
+                                {company.map((item, i) => (
+                                    <TimelineItem key={i} {...item} index={i}/>
+                                ))}
+                            </ul>
+                        </motion.div>
+                    </div>
+                )}
 
                 {/* 자격증 */}
                 <motion.div

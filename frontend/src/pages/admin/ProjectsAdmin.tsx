@@ -9,17 +9,24 @@ export default function ProjectsAdmin() {
     const [editing, setEditing] = useState<Project | null>(null)
     const [form, setForm] = useState(empty)
 
-    const load = () => fetchProjects().then(setItems)
+    const load = () => fetchProjects()
+        .then(setItems)
+        .catch(err => console.error('목록 불러오기 실패:', err))
     useEffect(() => {
         load()
     }, [])
 
     const handleSave = async () => {
         if (!form.title.trim()) return
-        if (editing) {
-            await updateProject(editing.id, form)
-        } else {
-            await createProject(form)
+        try {
+            if (editing) {
+                await updateProject(editing.id, form)
+            } else {
+                await createProject(form)
+            }
+        } catch (err) {
+            console.error('저장 실패:', err)
+            return
         }
         setEditing(null)
         setForm(empty)
@@ -101,7 +108,7 @@ export default function ProjectsAdmin() {
                             <button onClick={() => handleEdit(item)} style={btnEdit}
                                     className="px-3 py-1 text-xs rounded-lg text-gray-300 transition-opacity hover:opacity-80">수정
                             </button>
-                            <button onClick={() => deleteProject(item.id).then(load)} style={btnDelete}
+                            <button onClick={() => deleteProject(item.id).then(load).catch(err => console.error('삭제 실패:', err))} style={btnDelete}
                                     className="px-3 py-1 text-xs rounded-lg text-red-400 transition-opacity hover:opacity-80">삭제
                             </button>
                         </div>

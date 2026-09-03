@@ -9,9 +9,13 @@ const fadeUp: Variants = {
 
 export default function TechStack() {
     const [skills, setSkills] = useState<Skill[]>([])
+    const [loaded, setLoaded] = useState(false)
 
     useEffect(() => {
-        fetchSkills().then(setSkills)
+        fetchSkills()
+            .then(setSkills)
+            .catch(err => console.error('skills 불러오기 실패:', err))
+            .finally(() => setLoaded(true))
     }, [])
 
     const categories = Array.from(new Set(skills.map(s => s.category)))
@@ -49,29 +53,31 @@ export default function TechStack() {
                 </motion.div>
 
                 {/* 카테고리 카드 */}
-                <motion.div
-                    variants={{visible: {transition: {staggerChildren: 0.1}}}}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{once: true, margin: '-60px'}}
-                    className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16"
-                >
-                    {categories.map(cat => (
-                        <motion.div
-                            key={cat.name}
-                            variants={fadeUp}
-                            className="rounded-2xl p-5"
-                            style={{background: 'rgba(88,28,135,0.1)', border: '1px solid rgba(168,85,247,0.15)'}}
-                        >
-                            <p className="text-xs tracking-widest text-purple-400 uppercase mb-3">{cat.name}</p>
-                            <div className="flex flex-col gap-1.5">
-                                {cat.items.map(item => (
-                                    <span key={item} className="text-sm text-gray-300">{item}</span>
-                                ))}
-                            </div>
-                        </motion.div>
-                    ))}
-                </motion.div>
+                {loaded && (
+                    <motion.div
+                        variants={{hidden: {}, visible: {transition: {staggerChildren: 0.1}}}}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{once: true, margin: '-60px'}}
+                        className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16"
+                    >
+                        {categories.map(cat => (
+                            <motion.div
+                                key={cat.name}
+                                variants={fadeUp}
+                                className="rounded-2xl p-5"
+                                style={{background: 'rgba(88,28,135,0.1)', border: '1px solid rgba(168,85,247,0.15)'}}
+                            >
+                                <p className="text-xs tracking-widest text-purple-400 uppercase mb-3">{cat.name}</p>
+                                <div className="flex flex-col gap-1.5">
+                                    {cat.items.map(item => (
+                                        <span key={item} className="text-sm text-gray-300">{item}</span>
+                                    ))}
+                                </div>
+                            </motion.div>
+                        ))}
+                    </motion.div>
+                )}
 
                 {/* 마키 스크롤 */}
                 <div className="flex flex-col gap-3 overflow-hidden">

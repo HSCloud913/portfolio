@@ -12,17 +12,24 @@ export default function SkillsAdmin() {
     const [editing, setEditing] = useState<Skill | null>(null)
     const [form, setForm] = useState(empty)
 
-    const load = () => fetchSkills().then(setItems)
+    const load = () => fetchSkills()
+        .then(setItems)
+        .catch(err => console.error('목록 불러오기 실패:', err))
     useEffect(() => {
         load()
     }, [])
 
     const handleSave = async () => {
         if (!form.name.trim()) return
-        if (editing) {
-            await updateSkill(editing.id, form)
-        } else {
-            await createSkill(form)
+        try {
+            if (editing) {
+                await updateSkill(editing.id, form)
+            } else {
+                await createSkill(form)
+            }
+        } catch (err) {
+            console.error('저장 실패:', err)
+            return
         }
         setEditing(null)
         setForm(empty)
@@ -117,7 +124,7 @@ export default function SkillsAdmin() {
                                     <button onClick={() => handleEdit(item)} style={btnEdit}
                                             className="px-3 py-1 text-xs rounded-lg text-gray-300 transition-opacity hover:opacity-80">수정
                                     </button>
-                                    <button onClick={() => deleteSkill(item.id).then(load)} style={btnDelete}
+                                    <button onClick={() => deleteSkill(item.id).then(load).catch(err => console.error('삭제 실패:', err))} style={btnDelete}
                                             className="px-3 py-1 text-xs rounded-lg text-red-400 transition-opacity hover:opacity-80">삭제
                                     </button>
                                 </div>
