@@ -3,9 +3,16 @@ import {createSkill, deleteSkill, fetchSkills, type Skill, updateSkill} from '..
 import {btnDelete, btnEdit, btnPrimary, btnSecondary, cardStyle, formCardStyle, inputStyle} from './adminStyles'
 import CustomSelect from './CustomSelect'
 
-const empty = {name: '', category: 'Frontend', level: 1}
+const empty = {name: '', category: 'Systems & Native', level: 1}
 
-const CATEGORIES = ['Frontend', 'Backend', 'DevOps', 'Tools']
+const CATEGORIES = [
+    'Systems & Native',
+    'Storage & Device',
+    'Desktop UI',
+    'Legacy & Migration',
+    'Web & Backend',
+    'Infra & Delivery',
+]
 
 export default function SkillsAdmin() {
     const [items, setItems] = useState<Skill[]>([])

@@ -29,6 +29,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                        // 순서 주의: 구체적인 규칙이 먼저 와야 한다. 아래 GET 전체 허용보다
+                        // 뒤에 두면 /all 도 공개되어 비공개 카드가 노출된다.
+                        .requestMatchers(HttpMethod.GET, "/api/projects/all").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated()

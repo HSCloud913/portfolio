@@ -3,13 +3,18 @@ import {createExperience, deleteExperience, type Experience, fetchExperiences, u
 import {btnDelete, btnEdit, btnPrimary, btnSecondary, cardStyle, formCardStyle, inputStyle} from './adminStyles'
 import CustomSelect from './CustomSelect'
 
-const empty = {type: 'EDUCATION', date: '', title: '', description: ''}
+const TYPES = ['COMPANY', 'EDUCATION', 'ACHIEVEMENT', 'LICENSE'] as const
 
 const TYPE_LABEL: Record<string, string> = {
-    EDUCATION: '교육',
     COMPANY: '경력',
+    EDUCATION: '교육',
+    ACHIEVEMENT: '수상',
     LICENSE: '자격증',
 }
+
+const empty = {type: 'COMPANY', date: '', title: '', description: '', sortOrder: '', linkTo: ''}
+
+const inputClass = 'w-full px-4 py-2.5 rounded-xl text-sm text-white placeholder-gray-600 outline-none'
 
 export default function ExperiencesAdmin() {
     const [items, setItems] = useState<Experience[]>([])
@@ -23,13 +28,24 @@ export default function ExperiencesAdmin() {
         load()
     }, [])
 
+    // 빈 칸은 빈 문자열이 아니라 null 로 보낸다. linkTo 가 빈 문자열이면 화면에
+    // 목적지 없는 "프로젝트 보기" 링크가 붙는다.
+    const toPayload = () => ({
+        type: form.type,
+        date: form.date.trim(),
+        title: form.title.trim(),
+        description: form.description.trim() || null,
+        sortOrder: form.sortOrder.trim() === '' ? null : Number(form.sortOrder),
+        linkTo: form.linkTo.trim() || null,
+    })
+
     const handleSave = async () => {
         if (!form.title.trim() || !form.date.trim()) return
         try {
             if (editing) {
-                await updateExperience(editing.id, form)
+                await updateExperience(editing.id, toPayload())
             } else {
-                await createExperience(form)
+                await createExperience(toPayload())
             }
         } catch (err) {
             console.error('저장 실패:', err)
@@ -42,7 +58,14 @@ export default function ExperiencesAdmin() {
 
     const handleEdit = (item: Experience) => {
         setEditing(item)
-        setForm({type: item.type, date: item.date, title: item.title, description: item.description})
+        setForm({
+            type: item.type,
+            date: item.date,
+            title: item.title,
+            description: item.description ?? '',
+            sortOrder: item.sortOrder === null ? '' : String(item.sortOrder),
+            linkTo: item.linkTo ?? '',
+        })
     }
 
     const handleCancel = () => {
@@ -65,24 +88,27 @@ export default function ExperiencesAdmin() {
                 <CustomSelect
                     value={form.type}
                     onChange={val => setForm(f => ({...f, type: val}))}
-                    options={[
-                        {value: 'EDUCATION', label: 'EDUCATION'},
-                        {value: 'COMPANY', label: 'COMPANY'},
-                        {value: 'LICENSE', label: 'LICENSE'},
-                    ]}
+                    options={TYPES.map(t => ({value: t, label: `${t} (${TYPE_LABEL[t]})`}))}
                 />
                 <input placeholder="Date (예: 2024.06 또는 2022 ~ 2024)" value={form.date}
                        onChange={e => setForm(f => ({...f, date: e.target.value}))}
-                       style={inputStyle}
-                       className="w-full px-4 py-2.5 rounded-xl text-sm text-white placeholder-gray-600 outline-none"/>
+                       style={inputStyle} className={inputClass}/>
                 <input placeholder="Title" value={form.title}
                        onChange={e => setForm(f => ({...f, title: e.target.value}))}
-                       style={inputStyle}
-                       className="w-full px-4 py-2.5 rounded-xl text-sm text-white placeholder-gray-600 outline-none"/>
-                <input placeholder="Description" value={form.description}
+                       style={inputStyle} className={inputClass}/>
+                <input placeholder="Description (선택)" value={form.description}
                        onChange={e => setForm(f => ({...f, description: e.target.value}))}
-                       style={inputStyle}
-                       className="w-full px-4 py-2.5 rounded-xl text-sm text-white placeholder-gray-600 outline-none"/>
+                       style={inputStyle} className={inputClass}/>
+
+                <div className="grid grid-cols-2 gap-3">
+                    <input type="number" step={10} placeholder="Sort order (10 단위)" value={form.sortOrder}
+                           onChange={e => setForm(f => ({...f, sortOrder: e.target.value}))}
+                           style={inputStyle} className={inputClass}/>
+                    <input placeholder="Link to (예: project-40)" value={form.linkTo}
+                           onChange={e => setForm(f => ({...f, linkTo: e.target.value}))}
+                           style={inputStyle} className={inputClass}/>
+                </div>
+
                 <div className="flex gap-2 mt-1">
                     <button onClick={handleSave} style={btnPrimary}
                             className="px-5 py-2 rounded-xl text-sm font-medium text-white transition-opacity hover:opacity-80">저장
@@ -95,7 +121,7 @@ export default function ExperiencesAdmin() {
             </div>
 
             {/* 목록 - 타입별 그룹 */}
-            {(['EDUCATION', 'COMPANY', 'LICENSE'] as const).map(type => {
+            {TYPES.map(type => {
                 const group = items.filter(i => i.type === type)
                 if (group.length === 0) return null
                 return (
@@ -105,7 +131,14 @@ export default function ExperiencesAdmin() {
                             <div key={item.id} style={cardStyle}
                                  className="flex items-start justify-between p-4 rounded-xl gap-4">
                                 <div className="flex flex-col gap-0.5 min-w-0">
-                                    <p className="text-white font-medium text-sm">{item.title}</p>
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                        <span className="text-xs text-gray-600 tabular-nums">{item.sortOrder ?? '—'}</span>
+                                        <p className="text-white font-medium text-sm">{item.title}</p>
+                                        {item.linkTo && (
+                                            <span className="text-xs px-2 py-0.5 rounded text-purple-400"
+                                                  style={{background: 'rgba(88,28,135,0.4)'}}>→ {item.linkTo}</span>
+                                        )}
+                                    </div>
                                     <p className="text-purple-400 text-xs">{item.date}</p>
                                     {item.description &&
                                         <p className="text-gray-500 text-xs truncate mt-0.5">{item.description}</p>}

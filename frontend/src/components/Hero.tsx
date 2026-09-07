@@ -58,7 +58,7 @@ export default function Hero() {
                 </motion.div>
 
                 <motion.p variants={item} className="text-xs tracking-[0.4em] text-purple-400 uppercase mb-4">
-                    Portfolio · 최성운
+                    Portfolio · Nebula
                 </motion.p>
 
                 <motion.h1
@@ -70,11 +70,11 @@ export default function Hero() {
                         WebkitTextFillColor: 'transparent',
                     }}
                 >
-                    Nebula
+                    최성운
                 </motion.h1>
 
                 <motion.p variants={item} className="text-gray-400 text-lg mb-5 tracking-wide">
-                    시스템 소프트웨어 개발자 · 8년+ 경력
+                    9년차 시스템 소프트웨어 개발자
                 </motion.p>
 
                 <motion.div
@@ -84,9 +84,9 @@ export default function Hero() {
                 />
 
                 <motion.p variants={item} className="text-gray-300 leading-relaxed mb-8 max-w-lg text-sm">
-                    C++ 및 C#을 주로 사용하는 소프트웨어 개발자로, 다양한 프로젝트에서 경험을 쌓았습니다.<br/>
-                    최신 기술 트렌드를 반영한 효율적인 코드와 좋은 협업 문화,<br/>
-                    두 가지를 함께 추구합니다.
+                    Windows 네이티브 애플리케이션과 스토리지 소프트웨어를 만듭니다.<br/>
+                    디스크 복제/백업/보안 삭제 도구부터 노하드 환경 클라이언트까지,<br/>
+                    OS와 하드웨어에 가까운 층에서 9년을 보냈습니다.
                 </motion.p>
 
                 {/* CTA 버튼 */}

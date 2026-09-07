@@ -18,13 +18,20 @@ public class ExperienceService {
     private final ExperienceRepository experienceRepository;
 
     public ExperienceResponse create(ExperienceRequest request) {
-        Experience experience = new Experience(request.type(), request.date(), request.title(), request.description());
+        Experience experience = Experience.builder()
+                .type(request.type())
+                .date(request.date())
+                .title(request.title())
+                .description(request.description())
+                .sortOrder(request.sortOrder())
+                .linkTo(request.linkTo())
+                .build();
         return new ExperienceResponse(experienceRepository.save(experience));
     }
 
     @Transactional(readOnly = true)
     public List<ExperienceResponse> getAll() {
-        return experienceRepository.findAll().stream()
+        return experienceRepository.findAllByOrderBySortOrderAsc().stream()
                 .map(ExperienceResponse::new)
                 .toList();
     }
@@ -38,7 +45,8 @@ public class ExperienceService {
 
     public ExperienceResponse update(Long id, ExperienceRequest request) {
         Experience experience = experienceRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found: " + id));
-        experience.update(request.type(), request.date(), request.title(), request.description());
+        experience.update(request.type(), request.date(), request.title(), request.description(),
+                request.sortOrder(), request.linkTo());
         return new ExperienceResponse(experienceRepository.save(experience));
     }
 

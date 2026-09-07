@@ -7,6 +7,22 @@ const fadeUp: Variants = {
     visible: {opacity: 1, y: 0, transition: {duration: 0.7, ease: 'easeOut'}},
 }
 
+// 카테고리 표시 순서. 백엔드에 정렬 필드가 없어 프론트에서 고정한다.
+// 목록에 없는 카테고리는 뒤로 밀린다.
+const GROUP_ORDER = [
+    'Systems & Native',
+    'Storage & Device',
+    'Desktop UI',
+    'Legacy & Migration',
+    'Web & Backend',
+    'Infra & Delivery',
+]
+
+const orderOf = (name: string) => {
+    const i = GROUP_ORDER.indexOf(name)
+    return i === -1 ? GROUP_ORDER.length : i
+}
+
 export default function TechStack() {
     const [skills, setSkills] = useState<Skill[]>([])
     const [loaded, setLoaded] = useState(false)
@@ -19,6 +35,7 @@ export default function TechStack() {
     }, [])
 
     const categories = Array.from(new Set(skills.map(s => s.category)))
+        .sort((a, b) => orderOf(a) - orderOf(b))
         .map(name => ({
             name,
             items: skills.filter(s => s.category === name).map(s => s.name)
@@ -59,7 +76,7 @@ export default function TechStack() {
                         initial="hidden"
                         whileInView="visible"
                         viewport={{once: true, margin: '-60px'}}
-                        className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16"
+                        className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-16"
                     >
                         {categories.map(cat => (
                             <motion.div

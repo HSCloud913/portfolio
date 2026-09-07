@@ -6,15 +6,30 @@ export interface Project {
     problem: string
     role: string
     impact: string
+    /** 표시용 기간 문자열. '2024.11 – 현재' 처럼 날짜가 아닌 값도 들어온다. */
+    period: string | null
+    company: string | null
+    /** 카드 그룹명. Projects 섹션의 소제목으로 쓰인다. */
+    groupName: string | null
+    /** 표시 순서. 카드를 끼워 넣을 수 있도록 10 단위로 부여한다. */
+    sortOrder: number | null
+    repoUrl: string | null
+    /** false 면 공개 사이트에서 숨는다. 관리자 목록에는 계속 보인다. */
+    published: boolean
     tags: string[]
 }
 
 export interface Experience {
     id: number
+    /** EDUCATION | COMPANY | ACHIEVEMENT | LICENSE */
     type: string
     date: string
     title: string
-    description: string
+    description: string | null
+    /** 같은 type 안에서의 표시 순서 */
+    sortOrder: number | null
+    /** 연결할 Projects 카드의 앵커. 예: 'project-40' */
+    linkTo: string | null
 }
 
 export interface Skill {
@@ -83,6 +98,10 @@ export const login = (username: string, password: string): Promise<{ token: stri
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({username, password}),
     })
+
+// 관리자 목록용. 비공개 카드까지 포함하므로 인증이 필요하다.
+export const fetchAllProjects = (): Promise<Project[]> =>
+    request('/projects/all', {headers: authHeaders()})
 
 export const createProject = (data: Omit<Project, 'id'>): Promise<Project> =>
     request('/projects', {

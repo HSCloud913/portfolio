@@ -22,7 +22,14 @@ public class ProjectController {
         return projectService.create(request);
     }
 
+    /** 공개 사이트용. 비공개 카드는 빠진다. */
     @GetMapping
+    public List<ProjectResponse> getPublishedProjects() {
+        return projectService.getPublished();
+    }
+
+    /** 관리자용. 인증이 필요하며 비공개 카드까지 반환한다. */
+    @GetMapping("/all")
     public List<ProjectResponse> getAllProjects() {
         return projectService.getAll();
     }
