@@ -16,7 +16,7 @@ export default function AdminLayout() {
     }
 
     return (
-        <div className="min-h-screen flex" style={{background: '#050508'}}>
+        <div className="min-h-screen flex">
             {/* 사이드바 */}
             <aside
                 className="w-52 shrink-0 flex flex-col p-6"

@@ -8,7 +8,7 @@ import CursorGlow from '../components/CursorGlow'
 
 export default function Portfolio() {
     return (
-        <div style={{background: '#050508'}}>
+        <>
             <CursorGlow/>
             <Nav/>
             <Hero/>
@@ -16,6 +16,6 @@ export default function Portfolio() {
             <Projects/>
             <Career/>
             <Contact/>
-        </div>
+        </>
     )
 }

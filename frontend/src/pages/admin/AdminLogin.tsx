@@ -25,7 +25,7 @@ export default function AdminLogin() {
     )
 
     return (
-        <div className="min-h-screen flex items-center justify-center" style={{background: '#050508'}}>
+        <div className="min-h-screen flex items-center justify-center">
             <div
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full pointer-events-none"
                 style={{background: 'radial-gradient(circle, rgba(124,58,237,0.1) 0%, transparent 70%)'}}
