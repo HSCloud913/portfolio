@@ -27,22 +27,16 @@ export default function ProjectDetail({project, onClose}: { project: Project; on
         }
         document.addEventListener('keydown', onKey)
 
-        // overflow 를 잠그면 세로 스크롤바가 사라지면서 그 폭만큼 페이지가 넓어져
-        // 뒤쪽 콘텐츠가 오른쪽으로 밀린다. 사라진 스크롤바 폭을 padding 으로 메워
-        // 레이아웃이 그대로 있게 한다.
-        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+        // 레이아웃이 밀리지 않는 것은 index.css 의 scrollbar-gutter: stable 이 맡는다.
+        // 여기서 padding 으로 폭을 보정하면 gutter 와 겹쳐 오히려 반대로 밀린다.
         const previousOverflow = document.body.style.overflow
-        const previousPaddingRight = document.body.style.paddingRight
-
         document.body.style.overflow = 'hidden'
-        if (scrollbarWidth > 0) document.body.style.paddingRight = `${scrollbarWidth}px`
 
         closeRef.current?.focus()
 
         return () => {
             document.removeEventListener('keydown', onKey)
             document.body.style.overflow = previousOverflow
-            document.body.style.paddingRight = previousPaddingRight
         }
     }, [onClose])
 
