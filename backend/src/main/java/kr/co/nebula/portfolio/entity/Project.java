@@ -21,8 +21,20 @@ public class Project {
     private Long id;
 
     private String title;
+
+    // Problem/Role/Impact 는 문단 길이라 varchar(255) 를 넘는다. 컬럼을 TEXT 로 고정한다.
+    // (ddl-auto=update 는 컬럼을 추가할 뿐 기존 컬럼 타입을 넓히지 않으므로,
+    //  이미 만들어진 DB 는 아래 주석의 ALTER 를 한 번 실행해야 한다.)
+    //   ALTER TABLE project ALTER COLUMN problem TYPE text;
+    //   ALTER TABLE project ALTER COLUMN role    TYPE text;
+    //   ALTER TABLE project ALTER COLUMN impact  TYPE text;
+    @Column(columnDefinition = "TEXT")
     private String problem;
+
+    @Column(columnDefinition = "TEXT")
     private String role;
+
+    @Column(columnDefinition = "TEXT")
     private String impact;
 
     /**

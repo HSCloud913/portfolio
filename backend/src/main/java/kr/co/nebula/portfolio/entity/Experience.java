@@ -1,5 +1,6 @@
 package kr.co.nebula.portfolio.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,6 +26,10 @@ public class Experience {
 
     private String date;
     private String title;
+
+    // Project 와 같은 이유로 TEXT. 기존 DB 는 아래를 한 번 실행할 것.
+    //   ALTER TABLE experience ALTER COLUMN description TYPE text;
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     /**

@@ -23,6 +23,34 @@ const orderOf = (name: string) => {
     return i === -1 ? GROUP_ORDER.length : i
 }
 
+const MAX_LEVEL = 5
+
+/** 숙련도를 점 5개로 표시한다. 막대보다 가볍고 이름 옆 좁은 폭에 들어간다. */
+function LevelDots({level}: { level: number }) {
+    const filled = Math.max(0, Math.min(MAX_LEVEL, level))
+
+    return (
+        <span
+            className="flex shrink-0 items-center gap-1"
+            role="img"
+            aria-label={`숙련도 ${filled} / ${MAX_LEVEL}`}
+            title={`숙련도 ${filled} / ${MAX_LEVEL}`}
+        >
+            {Array.from({length: MAX_LEVEL}, (_, i) => (
+                <span
+                    key={i}
+                    className="h-1 w-1 rounded-full"
+                    style={
+                        i < filled
+                            ? {background: '#c084fc', boxShadow: '0 0 4px rgba(192,132,252,0.7)'}
+                            : {background: 'rgba(168,85,247,0.2)'}
+                    }
+                />
+            ))}
+        </span>
+    )
+}
+
 export default function TechStack() {
     const [skills, setSkills] = useState<Skill[]>([])
     const [loaded, setLoaded] = useState(false)
@@ -38,7 +66,11 @@ export default function TechStack() {
         .sort((a, b) => orderOf(a) - orderOf(b))
         .map(name => ({
             name,
-            items: skills.filter(s => s.category === name).map(s => s.name)
+            // level 을 함께 쓰므로 이름만 뽑지 않고 Skill 을 그대로 넘긴다.
+            // 같은 카테고리 안에서는 숙련도 높은 것부터.
+            items: skills
+                .filter(s => s.category === name)
+                .sort((a, b) => b.level - a.level)
         }))
 
     const allSkillNames = skills.map(s => s.name)
@@ -86,9 +118,12 @@ export default function TechStack() {
                                 style={{background: 'rgba(88,28,135,0.1)', border: '1px solid rgba(168,85,247,0.15)'}}
                             >
                                 <p className="text-xs tracking-widest text-purple-400 uppercase mb-3">{cat.name}</p>
-                                <div className="flex flex-col gap-1.5">
+                                <div className="flex flex-col gap-2">
                                     {cat.items.map(item => (
-                                        <span key={item} className="text-sm text-gray-300">{item}</span>
+                                        <div key={item.id} className="flex items-center justify-between gap-3">
+                                            <span className="text-sm leading-snug text-gray-300">{item.name}</span>
+                                            <LevelDots level={item.level}/>
+                                        </div>
                                     ))}
                                 </div>
                             </motion.div>
